@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 TIMESTAMP = 'timestamp'
 CSV_PREFIX = './results/'
-CSV_SUFFIX = '_fresh.csv'
+CSV_SUFFIX = '.csv'
 
 config = {
     "stationList": [
@@ -92,7 +92,17 @@ def getTodaysDateString():
     return formatted_date_string
 
 
+def getMinimumDateString():
+    today_utc = datetime.min
+    end_of_day_utc = today_utc.replace(hour=23, minute=59, second=59)
+    utc_offset = timezone.utc.utcoffset(today_utc)
+    formatted_date_string = end_of_day_utc.replace(tzinfo=timezone(utc_offset)).strftime('%Y-%m-%d %H:%M:%S') + "+00:00"
+    return formatted_date_string
+
+
 def getNewestDate(dataframe):
+    if dataframe.empty:
+        return None
     return dataframe[TIMESTAMP].max()
 
 
@@ -107,11 +117,13 @@ def getDataFromCSV(filename):
         return df
     except FileNotFoundError:
         print(f"File not found: {filename}")
-        return False
+        print(f"Creating new dataframe")
+        return None
 
 
 def updateCSV(station, old_df):
-    updated = createDataFrame(station, str(getNewestDate(old_df)), getTodaysDateString())
+    newest_date = getNewestDate(old_df)
+    updated = createDataFrame(station, newest_date, getTodaysDateString())
     if isinstance(updated, pd.core.frame.DataFrame):
         merged_df = pd.concat([old_df, updated], ignore_index=True)
         merged_df.to_csv(getStationCSVFileName(station), index=False)
@@ -127,13 +139,16 @@ def getAllEndpointsData(config, update=False):
         print("Loading station data: " + station['name'] + "  " + station['url'])
 
         df = getDataFromCSV(getStationCSVFileName(station))
-        if update:
-            print(f"    # Minimal data: {df[TIMESTAMP].min()}")
-            print(f"    # Maximal data: {df[TIMESTAMP].max()}")
+        if df is not None:
+            if update:
+                print(f"    # Minimal data: {df[TIMESTAMP].min()}")
+                print(f"    # Maximal data: {df[TIMESTAMP].max()}")
 
-            print("# Updating data for given endpoint... ")
-            df = updateCSV(station, df)
-
+                print("# Updating data for given endpoint... ")
+                df = updateCSV(station, df)
+        else:
+            df = createDataFrame(station, getMinimumDateString(), getTodaysDateString())
+            df.to_csv(getStationCSVFileName(station), index=False)
         print(f"    # Minimal data: {df[TIMESTAMP].min()}")
         print(f"    # Maximal data: {df[TIMESTAMP].max()}")
         results.append(df)
