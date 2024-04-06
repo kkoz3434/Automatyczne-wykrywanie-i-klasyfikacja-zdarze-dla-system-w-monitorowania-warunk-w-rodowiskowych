@@ -124,6 +124,7 @@ class DataManager:
                 df.to_csv(self.get_station_csv_file_name(station))
             print(f"    # Minimal data: {df[TIMESTAMP].min()}")
             print(f"    # Maximal data: {df[TIMESTAMP].max()}")
+            df.name = station['name']
             results.append(df)
 
         return results

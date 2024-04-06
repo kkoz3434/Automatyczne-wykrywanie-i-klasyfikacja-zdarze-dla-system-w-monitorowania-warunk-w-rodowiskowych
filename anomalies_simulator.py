@@ -19,7 +19,7 @@ class AnomaliesSimulator:
         selected_data.loc[:, column_name] = value
         modified_data = df.copy()
         modified_data.update(selected_data)
-
+        modified_data.name = df.name
         return modified_data
 
     """Multiplies given column_name by scalar in range [start_time, end_time]"""
@@ -31,7 +31,7 @@ class AnomaliesSimulator:
         selected_data[column_name] *= scalar
         modified_data = df.copy()
         modified_data.update(selected_data)
-
+        modified_data.name = df.name
         return modified_data
 
     """Adds random noise [-max_noise_value, max_noise_value] to given range [start_time, end_time]"""
@@ -53,7 +53,7 @@ class AnomaliesSimulator:
         selected_data[column_name] += random_noise
         modified_data = df.copy()
         modified_data.update(selected_data)
-
+        modified_data.name = df.name
         return modified_data
 
     """Zeroes zeros_no values in range [start_time, end_time]"""
@@ -71,7 +71,7 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-
+        modified_data.name = df.name
         return modified_data
 
     """Multiply random values by scalar in range [start_time, end_time]"""
@@ -91,18 +91,19 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-
+        modified_data.name = df.name
         return modified_data
 
     """Simulates malfunctioning sensor, values going from 100% to 0% within given range"""
 
     def extinction_parameter_in_range(self, df: pd.DataFrame, column_name: str, start_time, end_time) -> pd.DataFrame:
         selected_data = df.copy()
+
         selected_data = selected_data[
             (selected_data[TIMESTAMP] >= start_time) & (selected_data[TIMESTAMP] <= end_time)].copy()
         length_of_selected = len(selected_data)
         column = list(selected_data[column_name])
-        linspace_array = np.linspace(1.0, 0.0, length_of_selected)
+        linspace_array = np.linspace(0.0, 1.0, length_of_selected)
 
         for index in range(length_of_selected):
             column[index] *= linspace_array[index]
@@ -111,11 +112,13 @@ class AnomaliesSimulator:
         modified_data = df.copy()
         modified_data.update(selected_data)
 
+        modified_data.name = df.name
+
         return modified_data
 
 
 def tests():
-    datas = DataManager().get_all_endpoints_data(endpoints_config, update=False)
+    datas = DataManager().get_all_endpoints_data(endpoints_config, update=True)
     date_string = '29.03.2024 13:00'
 
     start_time = pd.to_datetime(date_string, format='%d.%m.%Y %H:%M', utc=True)
