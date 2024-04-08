@@ -13,6 +13,9 @@ CSV_SUFFIX = '.csv'
 
 
 class DataManager:
+    def __init__(self, nested=False):
+        self.nested = nested
+
     def make_requests(self, station, url, offset=None, limit=None, columns_to_save=None):
         params = {}
         if offset is not None:
@@ -82,6 +85,8 @@ class DataManager:
         return dataframe[TIMESTAMP].max()
 
     def get_station_csv_file_name(self, station):
+        if self.nested:
+            return '../' + CSV_PREFIX + station['name'] + CSV_SUFFIX
         return CSV_PREFIX + station['name'] + CSV_SUFFIX
 
     def get_data_from_csv(self, station):
