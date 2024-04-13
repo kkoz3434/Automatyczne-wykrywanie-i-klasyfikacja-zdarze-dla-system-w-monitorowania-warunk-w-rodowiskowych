@@ -64,6 +64,8 @@ class AnomaliesSimulator:
             (selected_data[TIMESTAMP] >= start_time) & (selected_data[TIMESTAMP] <= end_time)].copy()
         length_of_selected = len(selected_data)
         column = list(selected_data[column_name])
+        if length_of_selected < zeros_no:
+            zeros_no = length_of_selected
         random_indexes = random.sample(range(length_of_selected), zeros_no)
         for index in random_indexes:
             column[index] = 0
