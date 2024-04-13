@@ -114,24 +114,27 @@ class ZScoreDetector:
 def test():
     datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
 
-    start_date_string = '06.04.2024 00:00'
+    start_date_string = '10.01.2024 00:00'
     start_time = pd.to_datetime(start_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
-    end_date_string = '06.04.2024 23:59'
+    end_date_string = '11.01.2024 23:59'
     end_time = pd.to_datetime(end_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
     # display_data_frames(datas, TEMPERATURE, start_time, end_time)
 
-    column = PRESSURE
+    column = PM1
+
+    display_data_frame(datas[4], column, start_time, end_time)
 
     # display_data_frame(datas[0], TEMPERATURE, start_time, end_time)
-    destroyed_data = AnomaliesSimulator().add_random_noise_in_range(datas[0], column, start_time, end_time, 10000)
+    destroyed_data = AnomaliesSimulator().extinction_parameter_in_range(datas[0], column, start_time, end_time)
     # display_data_frame(destroyed_data, column, start_time, end_time)
 
-    outliers = ZScoreDetector().detect_by_mad_network_level(datas[:4], destroyed_data, column, start_time, end_time, 2)
+    outliers = ZScoreDetector().detect_by_mad_network_level(datas[:-1],destroyed_data, column, start_time, end_time, 1)
+    display_data_frame(destroyed_data, column, start_time, end_time)
 
-    display_data_frames([destroyed_data, outliers], column, start_time, end_time)
-    display_data_frames(datas, column, start_time, end_time)
+    display_data_frames([destroyed_data, outliers, datas[0]], column, start_time, end_time)
+    display_data_frames(datas[:-1], column, start_time, end_time)
 
 
 

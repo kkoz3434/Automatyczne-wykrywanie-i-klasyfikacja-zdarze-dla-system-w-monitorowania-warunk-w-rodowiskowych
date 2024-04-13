@@ -12,10 +12,17 @@ from endpoints_urls import endpoints_config
 import matplotlib.dates as mdates
 
 
-def display_data_frame(df: pd.DataFrame, column_name: str, start_time, end_time):
+def display_data_frame(df: pd.DataFrame, column_name: str, start_time=None, end_time=None):
+    if start_time is None:
+        start_time = df[TIMESTAMP].min()
+
+    if end_time is None:
+        end_time = df[TIMESTAMP].max()
+
+
     column_name_shortened = column_name.split('.')[-1]
     print(f"Plotting {column_name_shortened} for {df.name}")
-    plt.figure(figsize=(10,6))
+    plt.figure(figsize=(10,8))
 
     y_min = float('inf')
     y_max = float('-inf')
@@ -49,7 +56,7 @@ def display_data_frame(df: pd.DataFrame, column_name: str, start_time, end_time)
 
 def display_data_frames(dataframes: list[pd.DataFrame], column_name: str, start_time, end_time, ):
     # Plot the data
-    plt.figure(figsize=(10,6))
+    plt.figure(figsize=(10,8))
 
     y_min = float('inf')
     y_max = float('-inf')
@@ -81,21 +88,21 @@ def display_data_frames(dataframes: list[pd.DataFrame], column_name: str, start_
 
 
 def test():
-    datas = DataManager().get_all_endpoints_data(endpoints_config, update=False)
-    start_date_string = '30.12.2022 00:00'
+    datas = DataManager().get_all_endpoints_data(endpoints_config, update=True)
+    start_date_string = '01.04.2024 00:00'
     start_time = pd.to_datetime(start_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
-    end_date_string = '01.01.2023 23:59'
+    end_date_string = '03.04.2024 23:59'
     end_time = pd.to_datetime(end_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
-    # display_data_frame(datas[1], PM10, start_time, end_time)
+    # display_data_frame(datas[0], TEMPERATURE, start_time, end_time)
     # display_data_frame(datas[2], PM10, start_time, end_time)
 
     # display_data_frame(datas[0], PRESSURE, start_time, end_time)
-    # destroyed_data = AnomaliesSimulator().zero_random_in_range(datas[0], PRESSURE, start_time, end_time, 10)
+    destroyed_data = AnomaliesSimulator().extinction_parameter_in_range(datas[0], TEMPERATURE, start_time, end_time)
     # display_data_frame(destroyed_data, PRESSURE, start_time, end_time)
 
-    display_data_frames(datas, PM1, start_time, end_time)
+    display_data_frames([destroyed_data, datas[0]], TEMPERATURE, start_time, end_time)
 
 
 if __name__ == '__main__':

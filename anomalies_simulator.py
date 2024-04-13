@@ -53,7 +53,7 @@ class AnomaliesSimulator:
         selected_data[column_name] += random_noise
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name
+        modified_data.name = df.name+"Rand_noise"
         return modified_data
 
     """Zeroes zeros_no values in range [start_time, end_time]"""
@@ -71,7 +71,7 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name
+        modified_data.name = df.name + "_ZRIN"
         return modified_data
 
     """Multiply random values by scalar in range [start_time, end_time]"""
@@ -112,7 +112,7 @@ class AnomaliesSimulator:
         modified_data = df.copy()
         modified_data.update(selected_data)
 
-        modified_data.name = df.name
+        modified_data.name = df.name + "_ex_par_in_rng"
 
         return modified_data
 
