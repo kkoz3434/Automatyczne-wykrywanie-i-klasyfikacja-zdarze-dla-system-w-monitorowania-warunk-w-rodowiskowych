@@ -12,8 +12,8 @@ from endpoints_urls import endpoints_config
 
 class PseudoPeriodicDetector():
     def detect_by_periodic_avg(self, df: pd.DataFrame, column, start_time, end_time,
-                               time_step_in_hours=1, max_depth_in_days=10, threshold=2):
-        filtered_df = df[(df[TIMESTAMP] >= start_time) & (df[TIMESTAMP] <= end_time)]
+                               time_step_in_hours=1, max_depth_in_days=5, threshold=2):
+        filtered_df = df[(df[TIMESTAMP] >= start_time) & (df[TIMESTAMP] < end_time)]
         filtered_df = filtered_df.sort_values(by=TIMESTAMP)
 
         begin = start_time
@@ -27,7 +27,7 @@ class PseudoPeriodicDetector():
 
             # prepare previous values
             previous_column_values = []
-            for i in range(1, max_depth_in_days):
+            for i in range(0, max_depth_in_days):
                 prev_start = begin - pd.Timedelta(days=i)
                 prev_end = end - pd.Timedelta(days=i)
                 prev_filtered = df[
@@ -57,8 +57,8 @@ class PseudoPeriodicDetector():
         return outliers
 
     def detect_by_periodic_mad(self, df: pd.DataFrame, column, start_time, end_time,
-                               time_step_in_hours=1, max_depth_in_days=10, threshold=2):
-        filtered_df = df[(df[TIMESTAMP] >= start_time) & (df[TIMESTAMP] <= end_time)]
+                               time_step_in_hours=1, max_depth_in_days=5, threshold=2):
+        filtered_df = df[(df[TIMESTAMP] >= start_time) & (df[TIMESTAMP] < end_time)]
         filtered_df = filtered_df.sort_values(by=TIMESTAMP)
 
         begin = start_time
@@ -72,7 +72,7 @@ class PseudoPeriodicDetector():
 
             # prepare previous values
             previous_column_values = []
-            for i in range(1, max_depth_in_days):
+            for i in range(0, max_depth_in_days):
                 prev_start = begin - pd.Timedelta(days=i)
                 prev_end = end - pd.Timedelta(days=i)
                 prev_filtered = df[
@@ -106,13 +106,13 @@ class PseudoPeriodicDetector():
 
     def detect_by_periodic_avg_network_level(self, datas: list[pd.DataFrame], df: pd.DataFrame, column, start_time,
                                              end_time,
-                                             time_step_in_hours=1, max_depth_in_days=10, threshold=2):
+                                             time_step_in_hours=1, max_depth_in_days=5, threshold=2):
         # prepare network related_data
         max_depth_time = start_time - pd.Timedelta(days=max_depth_in_days)
         filtered_datas = []
 
         for data in datas:
-            filtered = data[(data[TIMESTAMP] >= max_depth_time) & (data[TIMESTAMP] <= start_time)]
+            filtered = data[(data[TIMESTAMP] >= max_depth_time) & (data[TIMESTAMP] < end_time)]
             filtered_datas.append(filtered)
 
         network_data = pd.concat(filtered_datas)
@@ -131,7 +131,7 @@ class PseudoPeriodicDetector():
 
             # prepare network values
             network_column_values = []
-            for i in range(1, max_depth_in_days):
+            for i in range(0, max_depth_in_days):
                 network_start = begin - pd.Timedelta(days=i)
                 network_end = end - pd.Timedelta(days=i)
                 network_filtered = network_data[
@@ -162,13 +162,13 @@ class PseudoPeriodicDetector():
 
     def detect_by_periodic_mad_network_level(self, datas: list[pd.DataFrame], df: pd.DataFrame, column, start_time,
                                              end_time,
-                                             time_step_in_hours=1, max_depth_in_days=10, threshold=2):
+                                             time_step_in_hours=1, max_depth_in_days=5, threshold=2):
 
         max_depth_time = start_time - pd.Timedelta(days=max_depth_in_days)
         filtered_datas = []
 
         for data in datas:
-            filtered = data[(data[TIMESTAMP] >= max_depth_time) & (data[TIMESTAMP] <= start_time)]
+            filtered = data[(data[TIMESTAMP] >= max_depth_time) & (data[TIMESTAMP] <= end_time)]
             filtered_datas.append(filtered)
 
         network_data = pd.concat(filtered_datas)
@@ -187,7 +187,7 @@ class PseudoPeriodicDetector():
 
             # prepare network values
             network_column_values = []
-            for i in range(1, max_depth_in_days):
+            for i in range(0, max_depth_in_days):
                 network_start = begin - pd.Timedelta(days=i)
                 network_end = end - pd.Timedelta(days=i)
                 network_filtered = network_data[
@@ -223,19 +223,20 @@ class PseudoPeriodicDetector():
 def test():
     datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
 
-    start_date_string = '25.03.2023 00:00'
+    start_date_string = '19.03.2023 09:00'
     start_time = pd.to_datetime(start_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
-    end_date_string = '25.03.2023 23:59'
+    end_date_string = '19.03.2023 23:59'
     end_time = pd.to_datetime(end_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
     column = PM1
     display_data_frames(datas, column, start_time, end_time)
 
     destroyed = AnomaliesSimulator().zero_random_in_range(datas[0], column, start_time, end_time, 15)
-    outliers = PseudoPeriodicDetector().detect_by_periodic_avg_network_level(datas[1:], destroyed, column, start_time,
+    outliers = PseudoPeriodicDetector().detect_by_periodic_mad_network_level(datas[1:], destroyed, column, start_time,
                                                                              end_time,
-                                                                             max_depth_in_days=10)
+                                                                             threshold=2,
+                                                                             max_depth_in_days=1)
 
     display_data_frames([destroyed, outliers], column, start_time, end_time)
 
