@@ -1,14 +1,10 @@
-import random
-
-import numpy as np
 import pandas as pd
-from datetime import datetime, timezone
 
-from anomalies_simulator import AnomaliesSimulator
-from data_manager import DataManager
+from data_management.anomalies_simulator import AnomaliesSimulator
+from data_management.data_crawler import DataManager
 import matplotlib.pyplot as plt
-from data_frame_columns import TIMESTAMP, PRESSURE, TEMPERATURE, PM10, PM2_5, PM1
-from endpoints_urls import endpoints_config
+from common.data_frame_columns import TIMESTAMP, TEMPERATURE
+from common.endpoints_urls import endpoints_config
 import matplotlib.dates as mdates
 
 

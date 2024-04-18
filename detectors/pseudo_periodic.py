@@ -1,13 +1,12 @@
 import numpy as np
-import csv
 
 import pandas as pd
 
-from anomalies_simulator import AnomaliesSimulator
-from data_frame_columns import PRESSURE, TIMESTAMP, TEMPERATURE, PM1
-from data_manager import DataManager
-from data_visualizer import display_data_frame, display_data_frames
-from endpoints_urls import endpoints_config
+from data_management.anomalies_simulator import AnomaliesSimulator
+from common.data_frame_columns import TIMESTAMP, PM1
+from data_management.data_crawler import DataManager
+from common.data_visualizer import display_data_frames
+from common.endpoints_urls import endpoints_config
 
 
 class PseudoPeriodicDetector():
@@ -221,19 +220,19 @@ class PseudoPeriodicDetector():
 
 
 def test():
-    datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
+    datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=True)
 
-    start_date_string = '19.03.2023 09:00'
+    start_date_string = '17.04.2024 00:00'
     start_time = pd.to_datetime(start_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
-    end_date_string = '19.03.2023 23:59'
+    end_date_string = '17.04.2024 23:59'
     end_time = pd.to_datetime(end_date_string, format='%d.%m.%Y %H:%M', utc=True)
 
     column = PM1
     display_data_frames(datas, column, start_time, end_time)
 
-    destroyed = AnomaliesSimulator().zero_random_in_range(datas[0], column, start_time, end_time, 15)
-    outliers = PseudoPeriodicDetector().detect_by_periodic_mad_network_level(datas[1:], destroyed, column, start_time,
+    destroyed = AnomaliesSimulator().zero_random_in_range(datas[1], column, start_time, end_time, 15)
+    outliers = PseudoPeriodicDetector().detect_by_periodic_mad_network_level(datas[2:], destroyed, column, start_time,
                                                                              end_time,
                                                                              threshold=2,
                                                                              max_depth_in_days=1)

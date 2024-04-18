@@ -2,11 +2,9 @@ import time
 
 import pandas as pd
 import requests
-from datetime import datetime, timezone
 
-from data_frame_columns import TIMESTAMP
-from date_time_helper import get_minimum_date_string, get_today_date_string
-from endpoints_urls import endpoints_config
+from common.data_frame_columns import TIMESTAMP
+from common.date_time_helper import get_minimum_date_string, get_today_date_string
 
 CSV_PREFIX = './results/'
 CSV_SUFFIX = '.csv'

@@ -30,3 +30,5 @@ BEYOND1_0 = 'data.particleConcentrationSensor.particleCount.beyond1_0'
 BEYOND2_5 = 'data.particleConcentrationSensor.particleCount.beyond2_5'
 BEYOND5_0 = 'data.particleConcentrationSensor.particleCount.beyond5_0'
 AVERAGE_CURRENT_DRAW = 'data.particleConcentrationSensor.averageCurrentDraw'
+
+ANOMALY_ENUM = 'DataLabel'

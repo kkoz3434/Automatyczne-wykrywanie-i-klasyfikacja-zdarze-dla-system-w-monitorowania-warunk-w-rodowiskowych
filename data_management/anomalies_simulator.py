@@ -1,13 +1,13 @@
 import random
+from enum import Enum
 
 import numpy as np
 import pandas as pd
-from datetime import datetime, timezone
-from data_manager import DataManager
+from datetime import datetime
+from data_management.data_crawler import DataManager
 
-from data_frame_columns import TIMESTAMP, PRESSURE
-from endpoints_urls import endpoints_config
-
+from common.data_frame_columns import TIMESTAMP, PRESSURE
+from common.endpoints_urls import endpoints_config
 
 class AnomaliesSimulator:
     """Zeroes values in given column_name and given range [start_time, end_time]"""
@@ -85,6 +85,8 @@ class AnomaliesSimulator:
             (selected_data[TIMESTAMP] >= start_time) & (selected_data[TIMESTAMP] <= end_time)].copy()
         length_of_selected = len(selected_data)
         column = list(selected_data[column_name])
+        if length_of_selected < changes_no:
+            changes_no = length_of_selected
         random_indexes = random.sample(range(length_of_selected), changes_no)
 
         for index in random_indexes:
@@ -117,6 +119,7 @@ class AnomaliesSimulator:
         modified_data.name = df.name + "_ex_par_in_rng"
 
         return modified_data
+
 
 
 def tests():

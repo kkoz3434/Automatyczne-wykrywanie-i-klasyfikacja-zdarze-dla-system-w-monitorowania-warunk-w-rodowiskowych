@@ -1,13 +1,12 @@
 import numpy as np
-import csv
 
 import pandas as pd
 
-from anomalies_simulator import AnomaliesSimulator
-from data_frame_columns import PRESSURE, TIMESTAMP, TEMPERATURE, PM1
-from data_manager import DataManager
-from data_visualizer import display_data_frame, display_data_frames
-from endpoints_urls import endpoints_config
+from data_management.anomalies_simulator import AnomaliesSimulator
+from common.data_frame_columns import TIMESTAMP, PM1
+from data_management.data_crawler import DataManager
+from common.data_visualizer import display_data_frame, display_data_frames
+from common.endpoints_urls import endpoints_config
 
 MAD_CONST = 0.6745
 

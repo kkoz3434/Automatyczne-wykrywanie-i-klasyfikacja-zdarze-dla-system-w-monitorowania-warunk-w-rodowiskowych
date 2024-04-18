@@ -2,11 +2,9 @@ import csv
 
 import pandas as pd
 
-from anomalies_simulator import AnomaliesSimulator
-from data_frame_columns import PRESSURE, TIMESTAMP
-from data_manager import DataManager
-from data_visualizer import display_data_frame
-from endpoints_urls import endpoints_config
+from common.data_frame_columns import TIMESTAMP
+from data_management.data_crawler import DataManager
+from common.endpoints_urls import endpoints_config
 
 MEASUREMENT_PERIOD = 3600
 FILENAME_PREFIX = '../missing_data_detected/'
