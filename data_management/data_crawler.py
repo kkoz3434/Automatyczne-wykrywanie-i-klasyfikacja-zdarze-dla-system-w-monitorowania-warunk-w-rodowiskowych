@@ -130,4 +130,6 @@ class DataManager:
             df.name = station['name']
             results.append(df)
 
+        print("Finished loading data \n \n")
+
         return results

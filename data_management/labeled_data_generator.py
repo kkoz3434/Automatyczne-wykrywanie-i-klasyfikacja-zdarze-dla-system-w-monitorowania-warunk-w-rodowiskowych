@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from common.data_frame_columns import PM1, PM10, PM2_5, TIMESTAMP, ANOMALY_ENUM
-from common.data_visualizer import display_data_frames
+from common.data_visualizer import display_data_frames, display_data_frame
 from common.date_time_helper import convert_to_datetime
 from common.endpoints_urls import endpoints_config
 from common.working_dataset_config import working_datetime_strings_5_months
@@ -23,6 +23,9 @@ class DataLabel(Enum):
     SCALED = 4
     NOISE = 5
 
+    def __str__(self):
+        return self.name
+
 
 def random_data_label():
     enums = list(DataLabel)
@@ -35,7 +38,7 @@ def should_be_anomaly(probability):
 
 
 class LabeledDataGenerator:
-    def __init__(self, column=PM10, value=0, scalar=1, max_noise_value=None, zeros_in_range_no=0, scaled_in_range_no=0):
+    def __init__(self, column=PM10, value=0, scalar=10, max_noise_value=None, zeros_in_range_no=10, scaled_in_range_no=10):
         self.zeroing_value = value
         self.scalar = scalar
         self.max_noise_value = max_noise_value
@@ -50,7 +53,7 @@ class LabeledDataGenerator:
                                                            self.zeroing_value)
             case DataLabel.RANDOM_ZEROS:
                 return AnomaliesSimulator().zero_random_in_range(data_frame, self.column, start_time, end_time,
-                                                                 self.zeroing_value)
+                                                                self.zeros_in_range_no)
             case DataLabel.EXTINCTION:
                 return AnomaliesSimulator().extinction_parameter_in_range(data_frame, self.column, start_time, end_time)
             case DataLabel.SCALED:
@@ -97,13 +100,23 @@ class LabeledDataGenerator:
             beginning += pd.Timedelta(days=1)
             ending = beginning + pd.Timedelta(hours=23, minutes=59, seconds=59)
 
-        print(f'daily datas: {len(prepared_data_with_anomalies_in_days)}')
-        print(f'anomalies: {anomalies_counter} \n')
+        print(f'Daily datas: {len(prepared_data_with_anomalies_in_days)}')
+        print(f'Generated anomalies: {anomalies_counter}')
 
         enum_counts = Counter(anomalies)
         # Print the counts
         for label, count in enum_counts.items():
             print(f"    {label.name}: {count}")
+
+        print("\n")
+
+        return prepared_data_with_anomalies_in_days
+
+        # counter = 0
+        # for dataframe, anomaly in prepared_data_with_anomalies_in_days:
+        #     if anomaly != DataLabel.NORMAL and counter < 10:
+        #         display_data_frame(dataframe, self.column)
+        #         counter+=1
 
 
 def test():

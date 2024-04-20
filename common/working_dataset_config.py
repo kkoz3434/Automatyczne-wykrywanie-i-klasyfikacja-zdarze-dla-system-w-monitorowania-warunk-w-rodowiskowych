@@ -15,7 +15,8 @@ working_datetime_strings = [
     ['01.06.2023 00:00', '30.06.2023 23:59'],
 ]
 
-working_datetime_strings_5_months = ['01.02.2023 00:00', '30.06.2023 23:59']
+working_datetime_strings_5_months = ['01.02.2022 00:00', '30.06.2023 23:59']
+test_date_time_strings = ['01.03.2024 00:00', '30.03.2024 23:59']
 
 def test():
     datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
@@ -28,9 +29,9 @@ def test():
     #     column = PM10
     #     display_data_frames(datas, column, start_time, end_time)
 
-    start_date_string = working_datetime_strings[0][0]
+    start_date_string = test_date_time_strings[0]
     start_time = pd.to_datetime(start_date_string, format='%d.%m.%Y %H:%M', utc=True)
-    end_date_string = working_datetime_strings[4][1]
+    end_date_string = test_date_time_strings[1]
     end_time = pd.to_datetime(end_date_string, format='%d.%m.%Y %H:%M', utc=True)
     column = PM10
     display_data_frames(datas, column, start_time, end_time)

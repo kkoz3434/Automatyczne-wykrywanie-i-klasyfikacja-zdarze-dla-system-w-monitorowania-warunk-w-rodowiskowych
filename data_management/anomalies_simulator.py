@@ -19,7 +19,7 @@ class AnomaliesSimulator:
         selected_data.loc[:, column_name] = value
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name
+        modified_data.name = df.name + '_Z_IN_RNG'
         return modified_data
 
     """Multiplies given column_name by scalar in range [start_time, end_time]"""
@@ -31,7 +31,7 @@ class AnomaliesSimulator:
         selected_data[column_name] *= scalar
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name
+        modified_data.name = df.name + '_S_IN_RNG'
         return modified_data
 
     """Adds random noise [-max_noise_value, max_noise_value] to given range [start_time, end_time]"""
@@ -53,7 +53,7 @@ class AnomaliesSimulator:
         selected_data[column_name] += random_noise
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name+"Rand_noise"
+        modified_data.name = df.name+ "_R_N_IN_RNG"
         return modified_data
 
     """Zeroes zeros_no values in range [start_time, end_time]"""
@@ -73,7 +73,7 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name + "_ZRIN"
+        modified_data.name = df.name + "_Z_R_IN_RNG"
         return modified_data
 
     """Multiply random values by scalar in range [start_time, end_time]"""
@@ -95,7 +95,7 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name
+        modified_data.name = df.name + '_S_R_IN_RNG'
         return modified_data
 
     """Simulates malfunctioning sensor, values going from 100% to 0% within given range"""
@@ -116,7 +116,7 @@ class AnomaliesSimulator:
         modified_data = df.copy()
         modified_data.update(selected_data)
 
-        modified_data.name = df.name + "_ex_par_in_rng"
+        modified_data.name = df.name + "_E_P_IN_RNG"
 
         return modified_data
 
