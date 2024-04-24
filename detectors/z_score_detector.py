@@ -126,7 +126,7 @@ def test():
     display_data_frame(datas[4], column, start_time, end_time)
 
     # display_data_frame(datas[0], TEMPERATURE, start_time, end_time)
-    destroyed_data = AnomaliesSimulator().extinction_parameter_in_range(datas[0], column, start_time, end_time)
+    destroyed_data = AnomaliesSimulator().zero_random_in_range(datas[0], column, start_time, end_time, 15)
     # display_data_frame(destroyed_data, column, start_time, end_time)
 
     outliers = ZScoreDetector().detect_by_mad_network_level(datas[:-1],destroyed_data, column, start_time, end_time, 1)

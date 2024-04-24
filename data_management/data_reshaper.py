@@ -9,7 +9,7 @@ def remove_random_indexes(lst, n):
     indexes_to_remove = random.sample(range(len(lst)), n)
 
     # Remove the selected indexes from the list
-    new_arr = np.delete(lst, indexes_to_remove)
+    new_arr = np.delete(lst, indexes_to_remove, axis = 0)
 
     return new_arr
 
@@ -27,7 +27,7 @@ def add_elements_by_scheme(lst, X):
         new_value = (left_neighbor + right_neighbor) / 2
 
         # Insert the new value at the chosen index
-        lst = np.insert(lst, index, new_value)
+        lst = np.insert(lst, index, new_value, axis = 0)
     return lst
 
 def reshape_data( arr: list, data_length):
@@ -38,11 +38,14 @@ def reshape_data( arr: list, data_length):
 
     return arr
 
-def prepare_dataset(labeled_data, column):
-    labeled_data = [inner for inner in labeled_data if len(inner[0][column].values) > 80]
+def flatten_data(arr):
+    return [np.reshape(x, -1) for x in arr]
+
+def prepare_dataset(labeled_data, columns):
+    labeled_data = [inner for inner in labeled_data if len(inner[0][columns].values) > 80]
 
     # prepare X values
-    X = [inner[0][column].values for inner in labeled_data if len(inner[0][column].values) > 80]
+    X = [inner[0][columns].values for inner in labeled_data if len(inner[0][columns].values) > 80]
     X = [reshape_data(value, 90) for value in X]
 
     # prepare y values (labels)

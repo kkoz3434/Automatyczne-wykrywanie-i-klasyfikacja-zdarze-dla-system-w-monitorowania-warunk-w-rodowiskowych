@@ -220,7 +220,7 @@ class PseudoPeriodicDetector():
 
 
 def test():
-    datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=True)
+    datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
 
     start_date_string = '17.04.2024 00:00'
     start_time = pd.to_datetime(start_date_string, format='%d.%m.%Y %H:%M', utc=True)

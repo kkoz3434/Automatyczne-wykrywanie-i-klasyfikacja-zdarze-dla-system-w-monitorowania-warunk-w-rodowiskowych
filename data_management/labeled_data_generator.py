@@ -26,6 +26,9 @@ class DataLabel(Enum):
     def __str__(self):
         return self.name
 
+    def is_anomaly(self):
+        return self.value > 0
+
 
 def random_data_label():
     enums = list(DataLabel)
