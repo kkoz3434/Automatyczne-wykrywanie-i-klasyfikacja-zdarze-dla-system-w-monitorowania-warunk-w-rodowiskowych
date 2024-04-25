@@ -19,6 +19,8 @@ class ZScoreDetector:
         values = np.array(filtered_df[column])
         average = np.mean(values)
         std = np.std(values)
+        if std == 0.0:
+            return df
 
         # Calculate z-scores
         z_scores = ((values - average) / std)
@@ -41,6 +43,8 @@ class ZScoreDetector:
 
         if mad == 0:
             mad = 1.253314 * np.mean(values)
+            if mad == 0.0:
+                return df
 
         # Calculate z-scores
         modified_z_scores = ((values - median) / mad)
@@ -67,6 +71,8 @@ class ZScoreDetector:
 
         average = np.mean(network_values)
         std = np.std(network_values)
+        if std == 0.0:
+            return to_detect
 
         # Calculate z-scores
         z_scores = ((values - average) / std)
@@ -97,6 +103,8 @@ class ZScoreDetector:
 
         if mad == 0:
             mad = 1.253314 * np.mean(network_values)
+            if mad == 0.0:
+                return to_detect
 
         # Calculate z-scores
         z_scores = ((values - median) / mad)

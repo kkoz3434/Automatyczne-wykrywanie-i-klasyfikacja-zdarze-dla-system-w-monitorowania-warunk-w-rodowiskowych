@@ -37,6 +37,8 @@ class PseudoPeriodicDetector():
                 # calculate needed params
                 average = np.mean(np.array(previous_column_values))
                 std = np.std(previous_column_values)
+                if std == 0.0:
+                    return df
 
                 # filter sensor data and prepare mask
                 filtered = filtered_df[(filtered_df[TIMESTAMP] >= begin) & (filtered_df[TIMESTAMP] < end)]
@@ -50,10 +52,12 @@ class PseudoPeriodicDetector():
 
             begin = end
             end += pd.Timedelta(hours=time_step_in_hours)
-
-        outliers = pd.concat(detected_list)
-        outliers.name = df.name + "_pseudo_periodic_avg"
-        return outliers
+        if len(detected_list) > 0:
+            outliers = pd.concat(detected_list)
+            outliers.name = df.name + "_pseudo_periodic_avg"
+            return outliers
+        else:
+            return df
 
     def detect_by_periodic_mad(self, df: pd.DataFrame, column, start_time, end_time,
                                time_step_in_hours=1, max_depth_in_days=5, threshold=2):
@@ -84,6 +88,8 @@ class PseudoPeriodicDetector():
                 mad = 1.486 * np.median(np.abs(previous_column_values - median))
                 if mad == 0:
                     mad = 1.253314 * np.mean(previous_column_values)
+                    if mad == 0.0:
+                        return df
 
                 # filter sensor data and prepare mask
                 filtered = filtered_df[(filtered_df[TIMESTAMP] >= begin) & (filtered_df[TIMESTAMP] < end)]
@@ -98,10 +104,12 @@ class PseudoPeriodicDetector():
 
             begin = end
             end += pd.Timedelta(hours=time_step_in_hours)
-
-        outliers = pd.concat(detected_list)
-        outliers.name = df.name + "_pseudo_periodic_mad"
-        return outliers
+        if len(detected_list) > 0:
+            outliers = pd.concat(detected_list)
+            outliers.name = df.name + "_pseudo_periodic_mad"
+            return outliers
+        else:
+            return df
 
     def detect_by_periodic_avg_network_level(self, datas: list[pd.DataFrame], df: pd.DataFrame, column, start_time,
                                              end_time,
@@ -155,9 +163,12 @@ class PseudoPeriodicDetector():
             begin = end
             end += pd.Timedelta(hours=time_step_in_hours)
 
-        outliers = pd.concat(detected_list)
-        outliers.name = df.name + "_pseudo_periodic_avg_network"
-        return outliers
+        if len(detected_list) > 0:
+            outliers = pd.concat(detected_list)
+            outliers.name = df.name + "_pseudo_periodic_avg_network"
+            return outliers
+        else:
+            return df
 
     def detect_by_periodic_mad_network_level(self, datas: list[pd.DataFrame], df: pd.DataFrame, column, start_time,
                                              end_time,
@@ -214,9 +225,12 @@ class PseudoPeriodicDetector():
             begin = end
             end += pd.Timedelta(hours=time_step_in_hours)
 
-        outliers = pd.concat(detected_list)
-        outliers.name = df.name + "_pseudo_periodic_mad_network"
-        return outliers
+        if len(detected_list) > 0:
+            outliers = pd.concat(detected_list)
+            outliers.name = df.name + "_pseudo_periodic_mad_network"
+            return outliers
+        else:
+            return df
 
 
 def test():
@@ -232,9 +246,10 @@ def test():
     display_data_frames(datas, column, start_time, end_time)
 
     destroyed = AnomaliesSimulator().zero_random_in_range(datas[1], column, start_time, end_time, 15)
-    outliers = PseudoPeriodicDetector().detect_by_periodic_mad_network_level(datas[2:], destroyed, column, start_time,
+
+    outliers = PseudoPeriodicDetector().detect_by_periodic_avg_network_level(datas[2:], datas[0], column, start_time,
                                                                              end_time,
-                                                                             threshold=2,
+                                                                             threshold=3,
                                                                              max_depth_in_days=1)
 
     display_data_frames([destroyed, outliers], column, start_time, end_time)
