@@ -9,7 +9,7 @@ from common.data_frame_columns import PM1, PM10, PM2_5, TIMESTAMP, ANOMALY_ENUM
 from common.data_visualizer import display_data_frames, display_data_frame
 from common.date_time_helper import convert_to_datetime
 from common.endpoints_urls import endpoints_config
-from common.working_dataset_config import working_datetime_strings_5_months
+from common.working_dataset_config import working_datetime
 from data_management.anomalies_simulator import AnomaliesSimulator
 from data_management.data_crawler import DataManager
 from detectors.pseudo_periodic import PseudoPeriodicDetector
@@ -125,7 +125,7 @@ class LabeledDataGenerator:
 def test():
     datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
 
-    date_strings = working_datetime_strings_5_months
+    date_strings = working_datetime
     dates = [convert_to_datetime(date_strings[0]), convert_to_datetime(date_strings[1])]
 
     L = LabeledDataGenerator()

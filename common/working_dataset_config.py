@@ -7,15 +7,7 @@ from data_management.anomalies_simulator import AnomaliesSimulator
 from data_management.data_crawler import DataManager
 from detectors.pseudo_periodic import PseudoPeriodicDetector
 
-working_datetime_strings = [
-    ['01.02.2023 00:00', '28.02.2023 23:59'],
-    ['01.03.2023 00:00', '31.03.2023 23:59'],
-    ['01.04.2023 00:00', '30.04.2023 23:59'],
-    ['01.05.2023 00:00', '30.05.2023 23:59'],
-    ['01.06.2023 00:00', '30.06.2023 23:59'],
-]
-
-working_datetime_strings_5_months = ['01.02.2022 00:00', '30.06.2023 23:59']
+working_datetime = ['01.01.2021 00:00', '28.02.2024 23:59']
 test_date_time_strings = ['01.03.2024 00:00', '30.03.2024 23:59']
 
 def test():

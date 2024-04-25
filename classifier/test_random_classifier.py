@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from common.data_frame_columns import PM10
 from common.date_time_helper import convert_to_datetime
 from common.endpoints_urls import endpoints_config
-from common.working_dataset_config import working_datetime_strings_5_months, test_date_time_strings
+from common.working_dataset_config import working_datetime, test_date_time_strings
 from data_management.data_crawler import DataManager
 from data_management.data_reshaper import reshape_data, prepare_dataset
 from data_management.labeled_data_generator import LabeledDataGenerator, DataLabel
@@ -36,7 +36,7 @@ class RandomClassifier():
 def test():
     datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
 
-    date_strings = working_datetime_strings_5_months
+    date_strings = working_datetime
     training_dates = [convert_to_datetime(date_strings[0]), convert_to_datetime(date_strings[1])]
 
     test_dates_string = test_date_time_strings
