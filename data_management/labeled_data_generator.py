@@ -37,7 +37,7 @@ def random_data_label():
 
 
 def should_be_anomaly(probability):
-    return random.random() < probability
+    return random.random() < (probability *1.2)
 
 
 class LabeledDataGenerator:
@@ -65,7 +65,7 @@ class LabeledDataGenerator:
                 return AnomaliesSimulator().add_random_noise_in_range(data_frame, self.column, start_time, end_time,
                                                                       self.max_noise_value)
 
-    def generate_labeled_data(self, datas: list[pd.DataFrame], start_time, end_time, anomalies_percent: float):
+    def generate_labeled_data(self, datas: list[pd.DataFrame], start_time, end_time, anomalies_percent: float, max_anomalies = 10000000):
         # filter the data
         filtered = []
         for data in datas:
@@ -88,7 +88,7 @@ class LabeledDataGenerator:
             for data in filtered:
                 daily = data[(data[TIMESTAMP] >= beginning) & (data[TIMESTAMP] < ending)]
                 daily.name = data.name
-                if should_be_anomaly(anomalies_percent/100):
+                if should_be_anomaly(anomalies_percent/100) and anomalies_counter<max_anomalies:
                     anomaly = random_data_label()
                     daily = self.apply_anomaly(daily, anomaly, beginning, ending)
                     # daily[ANOMALY_ENUM] = anomaly

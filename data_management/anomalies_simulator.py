@@ -1,13 +1,14 @@
 import random
-from enum import Enum
 
 import numpy as np
 import pandas as pd
-from datetime import datetime
+
+from common.data_visualizer import display_data_frames
 from data_management.data_crawler import DataManager
 
-from common.data_frame_columns import TIMESTAMP, PRESSURE
+from common.data_frame_columns import TIMESTAMP, PM10
 from common.endpoints_urls import endpoints_config
+
 
 class AnomaliesSimulator:
     """Zeroes values in given column_name and given range [start_time, end_time]"""
@@ -19,7 +20,7 @@ class AnomaliesSimulator:
         selected_data.loc[:, column_name] = value
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name + '_Z_IN_RNG'
+        modified_data.name = df.name + '_ZEROS'
         return modified_data
 
     """Multiplies given column_name by scalar in range [start_time, end_time]"""
@@ -31,7 +32,7 @@ class AnomaliesSimulator:
         selected_data[column_name] *= scalar
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name + '_S_IN_RNG'
+        modified_data.name = df.name + '_SCALED'
         return modified_data
 
     """Adds random noise [-max_noise_value, max_noise_value] to given range [start_time, end_time]"""
@@ -53,7 +54,7 @@ class AnomaliesSimulator:
         selected_data[column_name] += random_noise
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name+ "_R_N_IN_RNG"
+        modified_data.name = df.name + "_NOISE"
         return modified_data
 
     """Zeroes zeros_no values in range [start_time, end_time]"""
@@ -73,7 +74,7 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name + "_Z_R_IN_RNG"
+        modified_data.name = df.name + "_RANDOM_ZEROS"
         return modified_data
 
     """Multiply random values by scalar in range [start_time, end_time]"""
@@ -95,7 +96,7 @@ class AnomaliesSimulator:
         selected_data[column_name] = column
         modified_data = df.copy()
         modified_data.update(selected_data)
-        modified_data.name = df.name + '_S_R_IN_RNG'
+        modified_data.name = df.name + '_RANDOM_SCALED'
         return modified_data
 
     """Simulates malfunctioning sensor, values going from 100% to 0% within given range"""
@@ -116,21 +117,35 @@ class AnomaliesSimulator:
         modified_data = df.copy()
         modified_data.update(selected_data)
 
-        modified_data.name = df.name + "_E_P_IN_RNG"
+        modified_data.name = df.name + "_EXTINCTION"
 
         return modified_data
 
 
-
 def tests():
-    datas = DataManager().get_all_endpoints_data(endpoints_config, update=True)
-    date_string = '29.03.2024 13:00'
-
+    datas = DataManager(True).get_all_endpoints_data(endpoints_config, update=False)
+    date_string = '28.02.2024 00:00'
     start_time = pd.to_datetime(date_string, format='%d.%m.%Y %H:%M', utc=True)
-    print(datas[0].loc[datas[0][TIMESTAMP] > start_time, PRESSURE])
-    modified = AnomaliesSimulator().extinction_parameter_in_range(datas[0], PRESSURE, start_time,
-                                                                  pd.to_datetime(datetime.now(), utc=True))
-    print(modified.loc[(modified[TIMESTAMP] > start_time), PRESSURE])
+
+    end_time = pd.to_datetime("28.02.2024 23:59", format='%d.%m.%Y %H:%M', utc=True)
+
+    print(datas[0].loc[datas[0][TIMESTAMP] > start_time, PM10])
+    modified1 = AnomaliesSimulator().zeros_in_range(datas[0], PM10, start_time,
+                                                    end_time)
+    modified2 = AnomaliesSimulator().scaled_in_range(datas[0], PM10, start_time,
+                                                     end_time, 3)
+
+    modified4 = AnomaliesSimulator().add_random_noise_in_range(datas[0], PM10, start_time, end_time)
+
+    modified5 = AnomaliesSimulator().zero_random_in_range(datas[0], PM10, start_time,
+                                                          end_time, 20)
+    modified6 = AnomaliesSimulator().random_scaled_values_in_range(datas[0], PM10, start_time,
+                                                                   end_time, 20, 3)
+
+    modified7 = AnomaliesSimulator().extinction_parameter_in_range(datas[0], PM10, start_time, end_time)
+
+    display_data_frames([modified1, modified2, modified4, modified5, modified6, modified7, datas[0]], PM10, start_time,
+                        end_time)
 
 
 def check():

@@ -7,6 +7,6 @@ endpoints_config = {
         {"name": "Młynne", "url": "https://datahub.ki.agh.edu.pl/api/endpoints/72/data/"},
         {"name": "Sucharskiego", "url": "https://datahub.ki.agh.edu.pl/api/endpoints/73/data/"},
         {"name": "Twardowskiego", "url": "https://datahub.ki.agh.edu.pl/api/endpoints/74/data/"},
-       {"name": "Konopnickiej", "url": "https://datahub.ki.agh.edu.pl/api/endpoints/75/data/"}
+        {"name": "Konopnickiej", "url": "https://datahub.ki.agh.edu.pl/api/endpoints/75/data/"}
     ],
 }
