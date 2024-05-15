@@ -2,7 +2,7 @@ import pandas as pd
 
 from data_management.data_crawler import DataManager
 import matplotlib.pyplot as plt
-from common.data_frame_columns import TIMESTAMP, TEMPERATURE, PM10
+from common.data_frame_columns import TIMESTAMP, TEMPERATURE, PM10, PM2_5, PM1
 from common.endpoints_urls import endpoints_config
 import matplotlib.dates as mdates
 
@@ -100,8 +100,8 @@ def test():
     # display_data_frame(datas[2], PM10, start_time, end_time)
 
     display_data_frames(datas, PM10 ,start_time, end_time, "PM10 concentration")
-
-
+    display_data_frames(datas, PM1, start_time, end_time, "PM1 concentration")
+    display_data_frames(datas, PM2_5, start_time, end_time, "PM2_5 concentration")
 
     # display_data_frame(datas[0], PRESSURE, start_time, end_time)
     # destroyed_data = AnomaliesSimulator().extinction_parameter_in_range(datas[0], TEMPERATURE, start_time, end_time)
