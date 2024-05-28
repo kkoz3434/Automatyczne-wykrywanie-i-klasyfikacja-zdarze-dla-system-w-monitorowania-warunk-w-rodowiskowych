@@ -23,7 +23,7 @@ def display_data_frame(df: pd.DataFrame, column_name: str, start_time=None, end_
     y_max = float('-inf')
 
     filtered_df = df[(df[TIMESTAMP] >= start_time) & (df[TIMESTAMP] <= end_time)]
-    plt.plot(filtered_df[TIMESTAMP], filtered_df[column_name], marker='o', linestyle='', label=df.name)
+    plt.plot(filtered_df[TIMESTAMP], filtered_df[column_name], marker='o', linestyle='', label=df.name, alpha=0.6)
 
     # Update min and max values
     if not filtered_df.empty:
@@ -60,7 +60,7 @@ def display_data_frames(dataframes: list[pd.DataFrame], column_name: str, start_
 
     for df in dataframes:
         filtered_df = df[(df[TIMESTAMP] >= start_time) & (df[TIMESTAMP] <= end_time)]
-        plt.plot(filtered_df[TIMESTAMP], filtered_df[column_name], marker='.', linestyle='', label=df.name)
+        plt.plot(filtered_df[TIMESTAMP], filtered_df[column_name], marker='.', linestyle=':', label=df.name)
 
         # Update min and max values
         if not filtered_df.empty:
